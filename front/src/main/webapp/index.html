@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="shoppingLists">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-language" content="pt-br" />
+    <title>Shopping List</title>
+    <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style/shopping.lists.css">
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-messages.js"></script>
+    <script src="lib/angular-locale_pt-br.js"></script>
+    <script src="lib/ng-currency.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/shoppingListsCtrl.js"></script>
+</head>
+
+<body ng-controller="shoppingListsCtrl">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">Lista de Compras</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Ajuda</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">        
+        <div class="row">
+            <div class="col-md-3 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li class="new-list">
+                        <input class="form-control" type="text" ng-model="list.name" name="name" placeholder="Adicionar nova Lista" >
+                        <button ng-click="createList(list)" type="button" class="btn btn-sm btn-success btn-new-list">Adicionar</button>
+                    </li>
+                    <li class="list-name" ng-repeat="list in lists | orderBy:'+name'">
+                        <button ng-click="removeList(list)" type="button" class="btn btn-xs btn-danger remove-list">Excluir</button>
+                        <span  ng-click="loadList(list)" href="#{{list}}">{{list}}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9 col-md-offset-3 main">
+                <div class="row" style="padding-bottom: 10px; border-bottom: 1px solid #EEE;">
+                    <h2 class="col-md-7">{{currentList.name}}</h2>
+                    <div class="col-md-5 list-header-detail">
+                        <span ng-if="!currentList || !currentList.itens">sem itens</span>
+                        <span ng-if="currentList.itens.length === 1">1 item</span>
+                        <span ng-if="currentList.itens.length > 1">{{currentList.itens.length}} itens</span>
+                        <span>|</span>
+                        <span>{{currentList.total | currency:"R$"}}</span>
+                    </div>
+                </div>
+                <div>
+                    <h4>Novo Item</h4>
+                    <div ng-show="itemForm.label.$dirty" ng-messages="itemForm.label.$error">
+                        <div ng-message="required" class="alert alert-danger">
+                            Por favor, preencha o campo nome!
+                        </div>
+                    </div>
+                    <div ng-show="itemForm.quantity.$dirty" ng-messages="itemForm.quantity.$error">
+                        <div ng-message="required" class="alert alert-danger">
+                            Por favor, preencha o campo quantidade!
+                        </div>
+                    </div>
+                    <form name="itemForm" class="row" style="padding-bottom: 10px; border-bottom: 1px solid #EEE;">
+                        <div class="col-md-3">
+                            <input class="form-control" type="text" ng-required="true" ng-model="item.label" name="label" placeholder="Nome" >
+                        </div>
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" ng-required="true" ng-model="item.quantity" name="quantity" placeholder="Quantidade" ng-required="true" >
+                        </div>
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" ng-model="item.value" name="value" placeholder="Valor" ng-currency >
+                        </div>                 
+                        <div class="col-md-1">
+                            <button ng-disabled="itemForm.$invalid" ng-click="addItem(currentList, item)" type="button" class="btn btn-sm btn-success btn-new-list">Adicionar</button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                </div>                
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+
+                                <th><a href="" ng-click="orderItemBy(label)">Nome</a></th>
+                                <th><a href="" ng-click="orderItemBy(quantity)">Quantidade</a></th>
+                                <th><a href="" ng-click="orderItemBy(value)">Valor Unitário</a></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in currentList.itens | orderBy:orderCriteria:orderCriteriaDirection">
+
+                                <td>{{item.label}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td>{{item.value | currency:"R$"}}</td>
+                                <td><button ng-if="!item.purchased" ng-click="removeItem(currentList, item)" type="button" class="btn btn-xs btn-danger">Excluir</button></td>
+                                <td>
+                                    <button ng-if="!item.purchased" ng-click="buyItem(currentList, item)" type="button" class="btn btn-xs btn-warning">Comprar</button>
+                                    <span ng-if="item.purchased" class="label label-info purchased">Comprado</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <script src="lib/bootstrap.min.js"></script>
+    -->
+</body>
+
+</html>

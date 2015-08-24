@@ -1,0 +1,1 @@
+angular.module("shoppingLists", ["ngMessages",'ng-currency']);

@@ -1,0 +1,11 @@
+# IntelliJ-Idea generated files
+.idea/
+**/.idea
+*.iml
+**/*.iml
+
+# Maven target directory
+**/target
+
+# Others
+**/*.DS_Store
